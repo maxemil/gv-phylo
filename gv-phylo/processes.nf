@@ -155,7 +155,7 @@ process run_mafft_add {
     each aligned_seed
   
   output:
-    path "${marker.simpleName}.mafft", emit: alignments
+    path "${marker.simpleName}.add.mafft", emit: alignments
 
   label "mid_cpu"
   publishDir "${params.output_folder}/alignments", mode: 'copy'
@@ -165,7 +165,7 @@ process run_mafft_add {
       
   script:
     """
-    mafft-einsi --thread ${task.cpus} --add new_sequences ${marker}  $aligned_seed > ${marker.simpleName}.add.mafft
+    mafft-einsi --thread ${task.cpus} --add ${marker} $aligned_seed > ${marker.simpleName}.add.mafft
     """
 }
 
