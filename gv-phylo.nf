@@ -4,6 +4,7 @@ params.diamond_db = ""
 params.seeds = ""
 params.gvdb_tsv = ""
 params.taxa_colors = ""
+params.aligned_seeds = ""
 
 include { annotate; diamond_gvogs; get_markers; prepare_backbone; 
         concat_seeds_markers; run_mafft; run_divvier; run_trimal; 
