@@ -36,3 +36,13 @@ workflow {
     }
     color_tree(run_iqtree.out.treefiles, taxa_colors)
 }
+
+workflow.onComplete {
+    File file = new File("$params.output_folder/${workflow.start}.log")
+    file.append("Pipeline $workflow.scriptName started at $workflow.start \n")
+    file.append("Pipeline $workflow.scriptName with hash $workflow.scriptId \n")
+    file.append("Pipeline $workflow.scriptName was launched at $workflow.launchDir \n")
+    file.append("Pipeline $workflow.scriptName was launched as $workflow.commandLine \n")
+    file.append("Pipeline $workflow.scriptName completed at $workflow.complete \n")
+    file.append("Execution status: ${ workflow.success ? 'OK' : 'failed' } \n")
+}
