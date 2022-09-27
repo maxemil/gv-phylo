@@ -36,7 +36,7 @@ def fix_gff(infile, outfile, prefix):
                 llist = line.split()
                 line = re.sub(llist[0], "{}_{}".format(prefix, llist[0]), line)
                 line = re.sub('ID=[0-9]+(_[0-9]+);', r"ID={}_{}\1;".format(prefix, llist[0]), line)
-                new_id = re.search('ID=([A-Za-z0-9_]+);', line)
+                new_id = re.search('ID=([A-Za-z0-9_-]+);', line)
                 line += "locus_tag={};".format(new_id.group(1))
             print(line, file=out)
             

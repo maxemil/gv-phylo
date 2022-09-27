@@ -12,10 +12,10 @@ process annotate {
     prodigal -i $genome \
             -o ${genome.simpleName}.raw.gff \
             -f gff \
-            -d ${genome.simpleName}.ffn \
-            -a ${genome.simpleName}.faa \
+            -d ${genome.simpleName}.raw.ffn \
+            -a ${genome.simpleName}.raw.faa \
             -n -p meta
-    ${workflow.projectDir}/gv_phylo/fix_prodigal_ids.py \
+    ${workflow.projectDir}/gv-phylo/fix_prodigal_ids.py \
             --faa ${genome.simpleName}.raw.faa \
             --faa_out ${genome.simpleName}.faa \
             --ffn ${genome.simpleName}.raw.ffn \
