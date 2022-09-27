@@ -10,11 +10,20 @@ process annotate {
   script:
     """
     prodigal -i $genome \
-            -o ${genome.simpleName}.gff \
+            -o ${genome.simpleName}.raw.gff \
             -f gff \
             -d ${genome.simpleName}.ffn \
             -a ${genome.simpleName}.faa \
             -n -p meta
+    ${workflow.projectDir}/gv_phylo/fix_prodigal_ids.py \
+            --faa ${genome.simpleName}.raw.faa \
+            --faa_out ${genome.simpleName}.faa \
+            --ffn ${genome.simpleName}.raw.ffn \
+            --ffn_out ${genome.simpleName}.ffn \
+            --gff ${genome.simpleName}.raw.gff \
+            --gff_out ${genome.simpleName}.gff \
+            --prefix ${genome.simpleName}
+            
 #    prokka --kingdom Viruses ${genome} \
 #            --outdir annotation \
 #            --prefix ${genome.simpleName} \
