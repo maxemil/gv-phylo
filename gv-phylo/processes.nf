@@ -2,17 +2,23 @@ process annotate {
   input:
     file genome
   output:
-    path "annotation/${genome.simpleName}.faa", emit: proteomes
-    path "annotation/${genome.simpleName}.*", emit: prokka_files
+    path "${genome.simpleName}.faa", emit: proteomes
+    path "${genome.simpleName}.{gff,ffn}", emit: prodigal_files
     
-  publishDir "${params.output_folder}", mode: 'copy', pattern: 'annotation/*'
+  publishDir "${params.output_folder}/annotation", mode: 'copy', pattern: '*.{gff,ffn,faa}'
 
   script:
     """
-    prokka --kingdom Viruses ${genome} \
-            --outdir annotation \
-            --prefix ${genome.simpleName} \
-            --locustag ${genome.simpleName}
+    prodigal -i $genome \
+            -o ${genome.simpleName}.gff \
+            -f gff \
+            -d ${genome.simpleName}.ffn \
+            -a ${genome.simpleName}.faa \
+            -n -p meta
+#    prokka --kingdom Viruses ${genome} \
+#            --outdir annotation \
+#            --prefix ${genome.simpleName} \
+#            --locustag ${genome.simpleName}
     """
 }
 
