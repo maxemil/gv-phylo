@@ -99,7 +99,9 @@ process prepare_backbone {
 
 
   script:
-    ${workflow.lauchDir}/gv-phylo/prepare_backbone.py $gvdg_genomes_tsv $seeds "Cafeteria"
+    """
+    ./$lauchDir/gv-phylo/prepare_backbone.py $gvdg_genomes_tsv $seeds "Cafeteria"
+    """
 }
 
 process concat_seeds_markers {
