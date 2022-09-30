@@ -15,7 +15,7 @@ process annotate {
             -d ${genome.simpleName}.raw.ffn \
             -a ${genome.simpleName}.raw.faa \
             -n -p meta
-    ${workflow.projectDir}/gv-phylo/fix_prodigal_ids.py \
+    $projectDir/gv-phylo/fix_prodigal_ids.py \
             --faa ${genome.simpleName}.raw.faa \
             --faa_out ${genome.simpleName}.faa \
             --ffn ${genome.simpleName}.raw.ffn \
@@ -100,7 +100,7 @@ process prepare_backbone {
 
   script:
     """
-    ./$lauchDir/gv-phylo/prepare_backbone.py $gvdg_genomes_tsv $seeds "Cafeteria"
+    $projectDir/gv-phylo/prepare_backbone.py $gvdg_genomes_tsv $seeds "Cafeteria"
     """
 }
 
