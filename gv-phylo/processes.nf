@@ -213,7 +213,7 @@ process run_iqtree {
              -pre ${trimal.simpleName}.iq \
              -nt ${task.cpus}
       """
-    else if( mode == 'iqtree-ufboot' )
+    else if( params.treemode == 'iqtree-ufboot' )
       """
       iqtree -s ${trimal} \
              -mset LG -mrate E,I,G,I+G,R \
