@@ -1,3 +1,5 @@
+params.treemode = 'iqtree-fast'
+
 process annotate {
   input:
     file genome
@@ -203,13 +205,22 @@ process run_iqtree {
   publishDir "${params.output_folder}/trees", mode: 'copy'
   
   script:
-    """
-    iqtree -s ${trimal} \
-           -m LG+G+I \
-           -fast \
-           -pre ${trimal.simpleName}.iq \
-           -nt ${task.cpus}
-    """
+    if( params.treemode == 'iqtree-fast' )
+      """
+      iqtree -s ${trimal} \
+             -m LG+G+I \
+             -fast \
+             -pre ${trimal.simpleName}.iq \
+             -nt ${task.cpus}
+      """
+    else if( mode == 'iqtree-ufboot' )
+      """
+      iqtree -s ${trimal} \
+             -mset LG -mrate E,I,G,I+G,R \
+             -bb 1000 -bnni \
+             -pre ${trimal.simpleName}.iq \
+             -nt ${task.cpus}
+      """
 }
 
 process color_tree {
