@@ -99,34 +99,7 @@ process prepare_backbone {
 
 
   script:
-    """
-    #!/home/mschoen/anaconda3/bin/python3
-    
-    import pandas as pd
-    from Bio import SeqIO
-
-    df = pd.read_csv('${gvdg_genomes_tsv}', sep='\t')
-    df['Family'] = df.apply(lambda x: x['Family'] if x['Family_AKA'] == '-' else x['Family_AKA'], axis=1)
-    df['Taxonomy'] = df.apply(lambda x: "_".join(x[['Class', 'Order', 'Family', 'common_name']]), axis=1)
-    # select all with under 4 contigs:
-    # sel = df[df['num_seqs'] < 4]
-    # select 'best' 5 genomes per family, sorted by count and isolates first
-    sel = pd.DataFrame(columns=df.columns)
-    for d in df.groupby('Family'):
-        sel = pd.concat([sel,d[1].sort_values(by=['num_seqs', 'Sequencing-approach']).iloc[0:5]])
-    # make sure Cafeteria is selected
-    sel = pd.concat([sel,df[df['genome_id'] == 'GCA_000889395.1_ViralProj59783']])
-    sel.drop_duplicates(inplace=True)
-    
-    with open('${seeds.simpleName}.selection.faa', 'w') as out:
-        for rec in SeqIO.parse('${seeds}', 'fasta'):
-            genome = rec.id.split('|')[0].replace('.fna', '').replace('.fa', '')
-            if genome in list(sel['genome_id']):
-                rec.id = "_".join([rec.id, sel[sel['genome_id'] == genome]['Taxonomy'].item()])
-                rec.id = rec.id.replace(' ', '_').replace('|', '..').replace(':', '_').strip('_')
-                rec.description = ""
-                SeqIO.write(rec, out, 'fasta')
-    """
+    ${workflow.lauchDir}/gv-phylo/prepare_backbone.py $gvdg_genomes_tsv $seeds "Cafeteria"
 }
 
 process concat_seeds_markers {
