@@ -83,9 +83,18 @@ process get_markers {
             prots.add(line[0])
     if prots:
         with open("${outfile.simpleName}.${seeds.simpleName}.fasta", 'w') as out:
-            for rec in SeqIO.parse("${proteome}", 'fasta'):
-                if rec.id in prots:
-                    SeqIO.write(rec, out, 'fasta')
+            if "${params.marker_selection}" == 'all':
+                for rec in SeqIO.parse("${proteome}", 'fasta'):
+                    if rec.id in prots:
+                        SeqIO.write(rec, out, 'fasta')
+            elif "${params.marker_selection}" == 'greedy':
+                best_rec = None
+                longest = 0
+                for rec in SeqIO.parse("${proteome}", 'fasta'):
+                    if len(rec.seq) > longest:
+                        best_rec = rec
+                        longest = len(rec.seq)
+                SeqIO.write(best_rec, out, 'fasta')
     """
 }
 
