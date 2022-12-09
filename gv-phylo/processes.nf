@@ -1,4 +1,5 @@
 params.treemode = 'iqtree-fast'
+params.marker_selection = "all"
 
 process annotate {
   input:
@@ -91,7 +92,7 @@ process get_markers {
                 best_rec = None
                 longest = 0
                 for rec in SeqIO.parse("${proteome}", 'fasta'):
-                    if len(rec.seq) > longest:
+                    if rec.id in prots and len(rec.seq) > longest:
                         best_rec = rec
                         longest = len(rec.seq)
                 SeqIO.write(best_rec, out, 'fasta')
