@@ -18,7 +18,9 @@ def fix_fasta(infile, old2new):
     for rec in SeqIO.parse(infile, 'fasta'):
         for o, n in old2new.items():
             if o in rec.description:
+                fixed_description = re.sub(o, n, rec.description)
                 rec.id = n.replace('ID=', '').replace(';', '')
+                rec.description = fixed_description
         recs.append(rec)
     with open(infile, 'w') as out:
             SeqIO.write(recs, out, 'fasta')
@@ -33,7 +35,7 @@ def fix_gff(infile):
             old_id = re.search('ID=([0-9]+)_([0-9]+);', line)
             new_id = re.sub(old_id.group(), "ID={}_{:03d};".format(llist[0], int(old_id.group(2))), old_id.group())
             line = re.sub(old_id.group(), new_id, line)
-            line += "locus_tag={};".format(new_id)
+            line += "locus_tag={}_{:03d};".format(llist[0], int(old_id.group(2)))
             lines.append(line)
             old2new[old_id.group()] = new_id
     with open(infile, 'w') as out:
