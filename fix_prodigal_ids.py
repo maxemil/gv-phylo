@@ -18,7 +18,7 @@ def fix_fasta(infile, old2new):
     for rec in SeqIO.parse(infile, 'fasta'):
         for o, n in old2new.items():
             if o in rec.description:
-                fixed_description = re.sub(o, n, rec.description)
+                fixed_description = re.sub(o, n, rec.description.replace('{} '.format(rec.id), ''))
                 rec.id = n.replace('ID=', '').replace(';', '')
                 rec.description = fixed_description
         recs.append(rec)
