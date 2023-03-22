@@ -13,19 +13,15 @@ process annotate {
   script:
     """
     prodigal -i $genome \
-            -o ${genome.simpleName}.raw.gff \
+            -o ${genome.simpleName}.gff \
             -f gff \
-            -d ${genome.simpleName}.raw.ffn \
-            -a ${genome.simpleName}.raw.faa \
+            -d ${genome.simpleName}.ffn \
+            -a ${genome.simpleName}.faa \
             -n -p meta
-    $projectDir/gv-phylo/fix_prodigal_ids.py \
-            --faa ${genome.simpleName}.raw.faa \
-            --faa_out ${genome.simpleName}.faa \
-            --ffn ${genome.simpleName}.raw.ffn \
-            --ffn_out ${genome.simpleName}.ffn \
-            --gff ${genome.simpleName}.raw.gff \
-            --gff_out ${genome.simpleName}.gff \
-            --prefix ${genome.simpleName}
+    fix_prodigal_ids.py \
+            --gff ${genome.simpleName}.gff \
+            ${genome.simpleName}.ffn \
+            ${genome.simpleName}.faa
             
 #    prokka --kingdom Viruses ${genome} \
 #            --outdir annotation \

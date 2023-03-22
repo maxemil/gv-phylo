@@ -1,4 +1,5 @@
 params.genomes = ""
+params.proteomes = ""
 params.output_folder = ""
 params.diamond_db = ""
 params.seeds = ""
@@ -11,14 +12,19 @@ params.marker_selection = "all"
 include { annotate; diamond_gvogs; get_markers; prepare_backbone; concat_seeds_markers; run_mafft; run_divvier; run_trimal; run_iqtree; color_tree; run_mafft_add} from './gv-phylo/processes.nf'
 
 workflow {
-    genomes = Channel.fromPath(params.genomes)
     diamond_db = Channel.fromPath(params.diamond_db).first()
     seeds = Channel.fromPath(params.seeds)
     gvdb_tsv = Channel.fromPath(params.gvdb_tsv).first()
     taxa_colors = Channel.fromPath(params.taxa_colors).first()
     
-    annotate(genomes)
-    diamond_gvogs(annotate.out.proteomes, diamond_db)
+    if (!params.aligned_seeds) {
+      genomes = Channel.fromPath(params.genomes)
+      annotate(genomes)
+      diamond_gvogs(annotate.out.proteomes, diamond_db)
+    } else {
+      proteomes = Channel.fromPath(params.proteomes)
+      diamond_gvogs(proteomes, diamond_db)
+    }
     get_markers(diamond_gvogs.out.gvogs_out, seeds, annotate.out.proteomes)
     marker_add = get_markers.out.markers.collectFile() { it ->
         [ "${it.name.tokenize('.')[1]}.additional.faa", it.text + '\n' ]
