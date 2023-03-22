@@ -21,11 +21,13 @@ workflow {
       genomes = Channel.fromPath(params.genomes)
       annotate(genomes)
       diamond_gvogs(annotate.out.proteomes, diamond_db)
+      get_markers(diamond_gvogs.out.gvogs_out, seeds, annotate.out.proteomes)
     } else {
       proteomes = Channel.fromPath(params.proteomes)
       diamond_gvogs(proteomes, diamond_db)
+      get_markers(diamond_gvogs.out.gvogs_out, seeds, proteomes)
+
     }
-    get_markers(diamond_gvogs.out.gvogs_out, seeds, annotate.out.proteomes)
     marker_add = get_markers.out.markers.collectFile() { it ->
         [ "${it.name.tokenize('.')[1]}.additional.faa", it.text + '\n' ]
     }
