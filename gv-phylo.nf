@@ -17,7 +17,7 @@ workflow {
     gvdb_tsv = Channel.fromPath(params.gvdb_tsv).first()
     taxa_colors = Channel.fromPath(params.taxa_colors).first()
     
-    if (!params.aligned_seeds) {
+    if (!params.proteomes) {
       genomes = Channel.fromPath(params.genomes)
       annotate(genomes)
       diamond_gvogs(annotate.out.proteomes, diamond_db)
