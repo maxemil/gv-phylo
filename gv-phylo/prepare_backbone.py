@@ -50,7 +50,7 @@ def write_selection(sel, seeds):
                 else:
                     prot = 'unknown_protein'
                 genome_tax = "_".join([genome, sel[sel['genome_id'] == genome]['Taxonomy'].item()])
-                rec.id = p.sub('_', genome_tax)
+                rec.id = p.sub('_', genome_tax).strip('_')
                 rec.id = f'{rec.id}..{prot}'
                 rec.description = ""
                 SeqIO.write(rec, out, 'fasta')
