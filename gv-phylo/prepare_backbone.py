@@ -3,6 +3,7 @@
 from Bio import SeqIO
 import pandas as pd
 import os
+import re
 import click 
 
 @click.command()
@@ -39,7 +40,7 @@ def make_selection(df, selectors, ingroup):
     return sel
 
 def write_selection(sel, seeds):
-    p = re.compile('.| |:|=|')
+    p = re.compile('\.|\ |:|=|-')
     with open('{}.selection.faa'.format(os.path.basename(seeds).split('.')[0]), 'w') as out:
         for rec in SeqIO.parse(seeds, 'fasta'):
             genome = rec.id.split('|')[0].replace('.fna', '').replace('.fa', '').replace('.fltr', '')
