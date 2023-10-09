@@ -10,22 +10,27 @@ import click
 @click.argument('seeds', type=str, required=1)
 @click.argument('selectors', type=str, nargs=-1)
 @click.option('-s', '--subgroup', type=str)
+@click.option('-i', '--ingroup', type=str)
 
-def main(gvdb, seeds, selectors, subgroup):
+
+def main(gvdb, seeds, selectors, subgroup, ingroup):
     df = pd.read_csv(gvdb, sep='\t')
     df['Family'] = df.apply(lambda x: x['Family'] if x['Family_AKA'] == '-' else x['Family_AKA'], axis=1)
     df['Taxonomy'] = df.apply(lambda x: "_".join(x[['Class', 'Order', 'Family', 'common_name']]), axis=1)
     df = df[df['Taxonomy'].str.contains(subgroup)]
-    selection = make_selection(df, selectors)
+    selection = make_selection(df, selectors, ingroup)
     write_selection(selection, seeds)
     
-def make_selection(df, selectors):
+def make_selection(df, selectors, ingroup):
     # select all with under 4 contigs:
     # sel = df[df['num_seqs'] < 4]
     # select 'best' 5 genomes per family, sorted by count and isolates first
     sel = pd.DataFrame(columns=df.columns)
-    for d in df.groupby('Family'):
+    for d in df[df['Taxonomy'].str.contains(ingroup)].groupby('Family'):
         sel = pd.concat([sel,d[1].sort_values(by=['num_seqs', 'Sequencing-approach']).iloc[0:5]])
+    # get only one rep per family in outgroup
+    for d in df[~df['Taxonomy'].str.contains(ingroup)].groupby('Family'):
+        sel = pd.concat([sel,d[1].sort_values(by=['num_seqs', 'Sequencing-approach']).iloc[0:1]])
     # manually add based on selection labels 
     for s in selectors:
          sel = pd.concat([sel,df[df['Taxonomy'].str.contains(s)]])

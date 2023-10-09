@@ -1,5 +1,7 @@
 params.treemode = 'iqtree-fast'
 params.marker_selection = "all"
+params.selectors = 'Cafeteria'
+params.ingroup = 'Megaviricetes'
 
 process annotate {
   input:
@@ -108,7 +110,7 @@ process prepare_backbone {
 
   script:
     """
-    $projectDir/gv-phylo/prepare_backbone.py $gvdg_genomes_tsv $seeds "Cafeteria"
+    $projectDir/gv-phylo/prepare_backbone.py $gvdg_genomes_tsv $seeds ${params.selectors} -i ${params.ingroup}
     """
 }
 

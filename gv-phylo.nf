@@ -8,6 +8,8 @@ params.taxa_colors = ""
 params.aligned_seeds = ""
 params.treemode = 'iqtree-fast'
 params.marker_selection = "all"
+params.selectors = 'Cafeteria'
+params.ingroup = 'Megaviricetes'
 
 include { annotate; diamond_gvogs; get_markers; prepare_backbone; concat_seeds_markers; run_mafft; run_divvier; run_trimal; run_iqtree; color_tree; run_mafft_add} from './gv-phylo/processes.nf'
 
