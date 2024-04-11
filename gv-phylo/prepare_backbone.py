@@ -15,9 +15,9 @@ import click
 
 
 def main(gvdb, seeds, selectors, subgroup, ingroup):
-    df = pd.read_csv(gvdb, sep='\t')
+    df = pd.read_csv(gvdb)
     df['Family'] = df.apply(lambda x: x['Family'] if x['Family_AKA'] == '-' else x['Family_AKA'], axis=1)
-    df['Taxonomy'] = df.apply(lambda x: "_".join(x[['Class', 'Order', 'Family', 'common_name']]), axis=1)
+    df['Taxonomy'] = df.apply(lambda x: "_".join(x[['Class', 'Order', 'Family', 'clean_name']]), axis=1)
     if subgroup:
         df = df[df['Taxonomy'].str.contains(subgroup)]
     selection = make_selection(df, selectors, ingroup)
@@ -40,18 +40,13 @@ def make_selection(df, selectors, ingroup):
     return sel
 
 def write_selection(sel, seeds):
-    p = re.compile('\.|\ |:|=|-')
     with open('{}.selection.faa'.format(os.path.basename(seeds).split('.')[0]), 'w') as out:
         for rec in SeqIO.parse(seeds, 'fasta'):
-            genome = rec.id.split('|')[0].replace('.fna', '').replace('.fa', '').replace('.fltr', '')
-            if genome in list(sel['genome_id']):
-                if len(rec.id.split('|')) > 1:
-                    prot = p.sub('_', rec.id.split('|')[1]).strip('_')
-                else:
-                    prot = 'unknown_protein'
-                genome_tax = "_".join([genome, sel[sel['genome_id'] == genome]['Taxonomy'].item()])
-                rec.id = p.sub('_', genome_tax).strip('_')
-                rec.id = f'{rec.id}..{prot}'
+            genome = '_'.join(rec.id.split('..')[0].split('_')[0:-1])
+            if genome in list(sel['clean_name']):
+                prot = f"{rec.id.split('..')[1]}_{rec.id.split('..')[0].split('_')[-1]}"
+                genome_tax = sel[sel['clean_name'] == genome]['Taxonomy'].item()
+                rec.id = f'{genome_tax}..{prot}'
                 rec.description = ""
                 SeqIO.write(rec, out, 'fasta')
 
