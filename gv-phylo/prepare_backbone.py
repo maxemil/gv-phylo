@@ -44,7 +44,7 @@ def write_selection(sel, seeds):
         for rec in SeqIO.parse(seeds, 'fasta'):
             genome = '_'.join(rec.id.split('..')[0].split('_')[0:-1])
             if genome in list(sel['clean_name']):
-                prot = f"{rec.id.split('..')[1]}_{rec.id.split('..')[0].split('_')[-1]}"
+                prot = f"{rec.id.split('..')[0].split('_')[-1]}_{rec.id.split('..')[1]}"
                 genome_tax = sel[sel['clean_name'] == genome]['Taxonomy'].item()
                 rec.id = f'{genome_tax}..{prot}'
                 rec.description = ""

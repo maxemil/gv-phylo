@@ -11,7 +11,7 @@ params.marker_selection = "all"
 params.selectors = 'Cafeteria'
 params.ingroup = 'Megaviricetes'
 params.subgroup = ''
-
+params.no_divvier = False
 include { annotate; diamond_gvogs; get_markers; prepare_backbone; concat_seeds_markers; run_mafft; run_divvier; run_trimal; run_iqtree; color_tree; run_mafft_add} from './gv-phylo/processes.nf'
 
 workflow {
@@ -39,8 +39,12 @@ workflow {
       prepare_backbone(seeds, gvdb_tsv)
       concat_seeds_markers(marker_add, prepare_backbone.out.backbone)
       run_mafft(concat_seeds_markers.out.concat_markers)
-      run_divvier(run_mafft.out.alignments)
-      run_trimal(run_divvier.out.divvied)
+      if (params.no_divvier) {
+        run_divvier(run_mafft.out.alignments)
+        run_trimal(run_divvier.out.divvied)
+      } else {
+        run_trimal(run_mafft.out.alignments)
+      }
       run_iqtree(run_trimal.out.trimaled)
     } else {
       aligned_seeds = Channel.fromPath(params.aligned_seeds)
