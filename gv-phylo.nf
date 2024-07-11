@@ -40,10 +40,10 @@ workflow {
       concat_seeds_markers(marker_add, prepare_backbone.out.backbone)
       run_mafft(concat_seeds_markers.out.concat_markers)
       if (params.no_divvier) {
+        run_trimal(run_mafft.out.alignments)
+      } else {
         run_divvier(run_mafft.out.alignments)
         run_trimal(run_divvier.out.divvied)
-      } else {
-        run_trimal(run_mafft.out.alignments)
       }
       run_iqtree(run_trimal.out.trimaled)
     } else {
