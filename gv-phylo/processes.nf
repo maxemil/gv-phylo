@@ -116,9 +116,9 @@ process prepare_backbone {
                   $seeds \
                   ${params.selectors} \
                   --ingroup ${params.ingroup} \
-                  --subgroup ${params.subgroup}
-                  --exclude ${params.exclude}
-                  --ingroup_per_family ${params.ingroup_per_family}
+                  --subgroup ${params.subgroup} \
+                  --exclude ${params.exclude} \
+                  --ingroup_per_family ${params.ingroup_per_family} \
                   --outgroup_per_family ${params.outgroup_per_family}
     """
 }
