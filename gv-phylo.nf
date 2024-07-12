@@ -11,6 +11,9 @@ params.marker_selection = "all"
 params.selectors = 'Cafeteria'
 params.ingroup = 'Megaviricetes'
 params.subgroup = ''
+params.exclude = ''
+params.outgroup_per_family = "1"
+params.ingroup_per_family = "5"
 params.no_divvier = false
 include { annotate; diamond_gvogs; get_markers; prepare_backbone; concat_seeds_markers; run_mafft; run_divvier; run_trimal; run_iqtree; color_tree; run_mafft_add} from './gv-phylo/processes.nf'
 

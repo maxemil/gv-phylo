@@ -111,7 +111,15 @@ process prepare_backbone {
 
   script:
     """
-    $projectDir/gv-phylo/prepare_backbone.py $gvdg_genomes_tsv $seeds ${params.selectors} -i ${params.ingroup} -s ${params.subgroup}
+    $projectDir/gv-phylo/prepare_backbone.py \
+                  $gvdg_genomes_tsv \
+                  $seeds \
+                  ${params.selectors} \
+                  --ingroup ${params.ingroup} \
+                  --soubgroup ${params.subgroup}
+                  --exclude ${params.exclude}
+                  --ingroup_per_family ${params.ingroup_per_family}
+                  --outgroup_per_family ${params.outgroup_per_family}
     """
 }
 
