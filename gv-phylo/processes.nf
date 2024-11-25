@@ -3,7 +3,7 @@ params.marker_selection = "all"
 params.selectors = 'Cafeteria'
 params.ingroup = 'Megaviricetes'
 params.subgroup = ''
-
+params.highlight_prefix = ''
 process annotate {
   input:
     file genome
@@ -256,5 +256,6 @@ process color_tree {
             -i ${treefile} \
             -c ${colors} \
             -o ${treefile.simpleName}.nex
+    plot_tree_viewer.py -t ${treefile} -o ${treefile.simpleName} -q ${params.highlight_prefix} -s 'highlight_tree'
     """
 }
