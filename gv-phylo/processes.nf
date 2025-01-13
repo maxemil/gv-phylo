@@ -246,9 +246,9 @@ process color_tree {
     file colors
 
   output:
-  path "${treefile.simpleName}.nex", emit: tree-nexus
-  path "${treefile.simpleName}.pdf", emit: tree-pdf
-  path "${treefile.simpleName}.tbi", emit: tree-tbi
+  path "${treefile.simpleName}.nex", emit: treenexus
+  path "${treefile.simpleName}.pdf", emit: treepdf
+  path "${treefile.simpleName}.tbi", emit: treetbi
 
   publishDir "${params.output_folder}/trees", mode: 'copy'
   
