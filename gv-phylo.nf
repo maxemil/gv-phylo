@@ -43,15 +43,15 @@ workflow {
     if (!params.aligned_seeds) {
       prepare_backbone(seeds, gvdb_tsv)
       concat_seeds_markers(marker_add, prepare_backbone.out.backbone)
-      run_mafft(concat_seeds_markers.out.concat_markers)
+      trim_alignmnent_per_sequence(prepare_backbone.out.backbone)
+      run_mafft(trim_alignmnent_per_sequence.out.trimmed)
       if (params.no_divvier) {
         run_trimal(run_mafft.out.alignments)
       } else {
         run_divvier(run_mafft.out.alignments)
         run_trimal(run_divvier.out.divvied)
       }
-      trim_alignmnent_per_sequence(run_trimal.out.trimaled)
-      run_iqtree(trim_alignmnent_per_sequence.out.trimmed)
+      run_iqtree(run_trimal.out.trimaled)
     } else {
       aligned_seeds = Channel.fromPath(params.aligned_seeds)
       run_mafft_add(marker_add, aligned_seeds)
