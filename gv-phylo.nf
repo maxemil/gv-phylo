@@ -6,8 +6,9 @@ params.seeds = ""
 params.gvdb_tsv = ""
 params.taxa_colors = ""
 params.aligned_seeds = ""
-params.treemode = 'iqtree-fast'
-params.marker_selection = "all"
+params.treemode = 'iqtree-fast' // options: iqtree-fast, iqtree-ufboot
+params.mafftmode = 'mafft-fftnsi'  // options: mafft-fftnsi, mafft-einsi
+params.marker_selection = "all" // options: all, greedy
 params.selectors = 'Cafeteria'
 params.ingroup = 'Megaviricetes'
 params.subgroup = ''
@@ -43,15 +44,15 @@ workflow {
     if (!params.aligned_seeds) {
       prepare_backbone(seeds, gvdb_tsv)
       concat_seeds_markers(marker_add, prepare_backbone.out.backbone)
-      trim_alignmnent_per_sequence(prepare_backbone.out.backbone)
-      run_mafft(trim_alignmnent_per_sequence.out.trimmed)
+      run_mafft(concat_seeds_markers.out.concat_markers)
       if (params.no_divvier) {
         run_trimal(run_mafft.out.alignments)
       } else {
         run_divvier(run_mafft.out.alignments)
         run_trimal(run_divvier.out.divvied)
       }
-      run_iqtree(run_trimal.out.trimaled)
+      trim_alignmnent_per_sequence(run_trimal.out.trimaled)
+      run_iqtree(trim_alignmnent_per_sequence.out.trimmed)
     } else {
       aligned_seeds = Channel.fromPath(params.aligned_seeds)
       run_mafft_add(marker_add, aligned_seeds)
