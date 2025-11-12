@@ -72,6 +72,8 @@ def write_selection(sel, seeds):
         'Pandoravirales': '#df0a0a'
     }
     sel_prot['Color'] = sel_prot.apply(lambda x: order2color[x['Order']] if x['Order'] in order2color else '#000000', axis=1)
+    sel_prot['novel'] = 'N'
+    sel_prot = sel_prot[['Protein_ID', 'genome_id', 'clean_name', 'novel', 'Family', 'Order', 'Class', 'Phylum', 'Color']]
     sel_prot.to_csv('{}.selection.tsv'.format(os.path.basename(seeds).split('.')[0]), sep='\t', index=False)
 
 if __name__ == '__main__':
