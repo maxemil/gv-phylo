@@ -1,9 +1,10 @@
-params.treemode = 'iqtree-fast'
-params.marker_selection = "all"
+params.treemode = 'iqtree-fast' // options: iqtree-fast, iqtree-ufboot
+params.marker_selection = "all" // options: all, greedy
 params.selectors = 'Cafeteria'
 params.ingroup = 'Megaviricetes'
 params.subgroup = ''
 params.highlight_prefix = ''
+params.mafftmode = 'mafft-fftnsi'  // options: mafft-fftnsi, mafft-einsi
 
 process annotate {
   input:
@@ -148,9 +149,13 @@ process run_mafft {
   publishDir "${params.output_folder}/alignments", mode: 'copy'
   
   script:
-    """
-    mafft-einsi --thread ${task.cpus} ${faa} > ${faa.simpleName}.mafft
-    """
+    if( params.mafftmode == 'mafft-fftnsi' )
+      """
+      mafft-fftnsi --thread ${task.cpus} ${faa} > ${faa.simpleName}.mafft      """
+    else if( params.mafftmode == 'mafft-einsi' )
+      """
+      mafft-einsi --thread ${task.cpus} ${faa} > ${faa.simpleName}.mafft
+      """
 }
 
 process run_mafft_add {
