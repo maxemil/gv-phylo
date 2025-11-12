@@ -31,10 +31,10 @@ workflow {
       gvogs_proteomes = diamond_gvogs.out.gvogs_out.join(annotate.out.proteomes)
       get_markers(gvogs_proteomes, seeds)
     } else {
-      proteomes = Channel.fromPath(params.proteomes)
+      proteomes = Channel.fromPath(params.proteomes).map { it -> [it.simpleName, it] }
       diamond_gvogs(proteomes, diamond_db)
-      get_markers(diamond_gvogs.out.gvogs_out, seeds, proteomes)
-
+      gvogs_proteomes = diamond_gvogs.out.gvogs_out.join(proteomes)
+      get_markers(gvogs_proteomes, seeds)
     }
     marker_add = get_markers.out.markers.collectFile() { it ->
         [ "${it.name.tokenize('.')[1]}.additional.faa", it.text + '\n' ]

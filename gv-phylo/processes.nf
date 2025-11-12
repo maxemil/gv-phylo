@@ -45,7 +45,6 @@ process diamond_gvogs {
   label "mid_cpu"
   publishDir "${params.output_folder}/diamond_gvogs", mode: 'copy'
 
-
   script:
     """
     diamond blastp --query ${proteome} \
@@ -104,7 +103,6 @@ process prepare_backbone {
     path "${seeds.simpleName}.selection.faa", emit: backbone
 
   publishDir "${params.output_folder}/backbone", mode: 'copy'
-
 
   script:
     """
