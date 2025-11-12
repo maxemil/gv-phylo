@@ -28,7 +28,8 @@ workflow {
       genomes = Channel.fromPath(params.genomes)
       annotate(genomes)
       diamond_gvogs(annotate.out.proteomes, diamond_db)
-      get_markers(diamond_gvogs.out.gvogs_out, seeds, annotate.out.proteomes)
+      gvogs_proteomes = diamond_gvogs.out.gvogs_out.join(annotate.out.proteomes)
+      get_markers(gvogs_proteomes, seeds)
     } else {
       proteomes = Channel.fromPath(params.proteomes)
       diamond_gvogs(proteomes, diamond_db)

@@ -4,12 +4,13 @@ params.selectors = 'Cafeteria'
 params.ingroup = 'Megaviricetes'
 params.subgroup = ''
 params.highlight_prefix = ''
+
 process annotate {
   input:
     file genome
   output:
-    path "${genome.simpleName}.faa", emit: proteomes
-    path "${genome.simpleName}.{gff,ffn}", emit: prodigal_files
+    tuple val("${genome.simpleName}"), path("${genome.simpleName}.faa"), emit: proteomes
+    tuple val("${genome.simpleName}"), path("${genome.simpleName}.{gff,ffn}"), emit: prodigal_files
     
   publishDir "${params.output_folder}/annotation", mode: 'copy', pattern: '*.{gff,ffn,faa}'
 
@@ -35,11 +36,11 @@ process annotate {
 
 process diamond_gvogs {
   input:
-    file proteome
+    tuple val(proteome_name), path(proteome)
     file diamond_db
 
   output:
-    path "${proteome.simpleName}.${diamond_db.simpleName}.o6", emit: gvogs_out
+    tuple val("${proteome_name}"), path("${proteome_name}.${diamond_db.simpleName}.o6"), emit: gvogs_out
 
   label "mid_cpu"
   publishDir "${params.output_folder}/diamond_gvogs", mode: 'copy'
@@ -56,12 +57,8 @@ process diamond_gvogs {
 
 process get_markers {
   input:
-    file outfile
+    tuple val(outfile_name), path(outfile), path(proteome)
     each seeds
-    each proteome
-
-  when:
-    "${outfile.simpleName}" == "${proteome.simpleName}"
 
   output:
     path "${outfile.simpleName}.${seeds.simpleName}.fasta", emit: markers, optional: true
