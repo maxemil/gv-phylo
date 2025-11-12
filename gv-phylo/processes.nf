@@ -102,6 +102,7 @@ process prepare_backbone {
 
   output:
     path "${seeds.simpleName}.selection.faa", emit: backbone
+    path "${seeds.simpleName}.selection.tsv", emit: backbone_tsv
 
   publishDir "${params.output_folder}/backbone", mode: 'copy'
 

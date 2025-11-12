@@ -60,6 +60,16 @@ def write_selection(sel, seeds):
                 rec.id = f'{genome_tax}..{prot}'
                 rec.description = ""
                 SeqIO.write(rec, out, 'fasta')
+    order2color = {
+        'Imitervirales': '#F0E442',
+        'Algavirales': '#0072B2',
+        'Chitovirales': '#D55E00',
+        'Asfuvirales': '#009E73',
+        'Pimascovirales': '#CC79A7',
+        'Pandoravirales': '#df0a0a'
+    }
+    sel['Color'] = sel.apply(lambda x: order2color[x['Order']] if x['Order'] in order2color else '#000000', axis=1)
+    sel.to_csv('{}.selection.tsv'.format(os.path.basename(seeds).split('.')[0]), sep='\t', index=False)
 
 if __name__ == '__main__':
     main()
