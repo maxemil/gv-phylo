@@ -16,7 +16,7 @@ params.outgroup_per_family = "1"
 params.ingroup_per_family = "5"
 params.no_divvier = false
 params.highlight_prefix = ''
-include { annotate; diamond_gvogs; get_markers; prepare_backbone; concat_seeds_markers; run_mafft; run_divvier; run_trimal; run_iqtree; color_tree; run_mafft_add} from './gv-phylo/processes.nf'
+include { annotate; diamond_gvogs; get_markers; prepare_backbone; concat_seeds_markers; run_mafft; run_divvier; run_trimal; run_iqtree; color_tree; run_mafft_add; trim_alignmnent_per_sequence} from './gv-phylo/processes.nf'
 
 workflow {
     diamond_db = Channel.fromPath(params.diamond_db).first()
@@ -49,7 +49,8 @@ workflow {
         run_divvier(run_mafft.out.alignments)
         run_trimal(run_divvier.out.divvied)
       }
-      run_iqtree(run_trimal.out.trimaled)
+      trim_alignmnent_per_sequence(run_trimal.out.trimaled)
+      run_iqtree(trim_alignmnent_per_sequence.out.trimmed)
     } else {
       aligned_seeds = Channel.fromPath(params.aligned_seeds)
       run_mafft_add(marker_add, aligned_seeds)

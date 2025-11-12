@@ -25,8 +25,9 @@ def main(gvdb, seeds, selectors, subgroup, ingroup, exclude, outgroup_per_family
     if subgroup:
         df = df[df['Taxonomy'].str.contains(subgroup)]
     selection = make_selection(df, selectors, ingroup, outgroup_per_family, ingroup_per_family)
-    for e in exclude.split(','):
-        selection = selection[-selection['Taxonomy'].str.contains(e)]
+    if exclude:
+        for e in exclude.split(','):
+            selection = selection[-selection['Taxonomy'].str.contains(e)]
     write_selection(selection, seeds)
     
 def make_selection(df, selectors, ingroup, outgroup_per_family, ingroup_per_family):

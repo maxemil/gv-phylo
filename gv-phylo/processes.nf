@@ -210,6 +210,24 @@ process run_trimal {
     """
 }
 
+process trim_alignmnent_per_sequence {
+  input:
+    file trimal
+
+  output:
+    path "${trimal.simpleName}.trimmed", emit: trimmed
+
+  publishDir "${params.output_folder}/alignments", mode: 'copy'
+  
+  script:
+    """
+    trim_aln_per_seq.py \
+            --alignment ${trimal} \
+            --output ${trimal.simpleName}.trimmed \
+            --fraction 0.7
+    """
+}
+
 process run_iqtree {
   input:
     file trimal
